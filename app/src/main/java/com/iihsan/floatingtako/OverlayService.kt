@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -60,10 +61,27 @@ class OverlayService : Service() {
         val dragHandle = overlayView!!.findViewById<TextView>(R.id.dragHandle)
 
         webView.webViewClient = WebViewClient()
+        webView.webChromeClient = WebChromeClient()
+
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
+        webView.settings.databaseEnabled = true
+        webView.settings.loadsImagesAutomatically = true
+        webView.settings.useWideViewPort = true
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.allowFileAccess = true
+        webView.settings.allowContentAccess = true
+        webView.settings.javaScriptCanOpenWindowsAutomatically = true
         webView.settings.mediaPlaybackRequiresUserGesture = false
-        webView.settings.cacheMode = WebSettings.LOAD_DEFAULT
+        webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
+        webView.settings.setSupportZoom(false)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        }
+
+        webView.clearCache(true)
+        webView.clearHistory()
         webView.loadUrl(overlayUrl)
 
         dragHandle.setOnTouchListener(object : View.OnTouchListener {
@@ -81,6 +99,7 @@ class OverlayService : Service() {
                         initialTouchY = event.rawY
                         return true
                     }
+
                     MotionEvent.ACTION_MOVE -> {
                         params.x = initialX + (event.rawX - initialTouchX).toInt()
                         params.y = initialY + (event.rawY - initialTouchY).toInt()
