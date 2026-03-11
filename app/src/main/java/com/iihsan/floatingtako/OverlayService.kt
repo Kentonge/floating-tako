@@ -32,9 +32,7 @@ class OverlayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (overlayView != null) {
-            return START_STICKY
-        }
+        if (overlayView != null) return START_STICKY
 
         val overlayUrl = intent?.getStringExtra("overlay_url")
             ?: "https://tako.id/overlay/alert?overlay_key=jr6kt9qn7v86x0dm3usppccz"
@@ -111,7 +109,12 @@ class OverlayService : Service() {
             }
         })
 
-        windowManager?.addView(overlayView, params)
+        try {
+            windowManager?.addView(overlayView, params)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            stopSelf()
+        }
 
         return START_STICKY
     }
