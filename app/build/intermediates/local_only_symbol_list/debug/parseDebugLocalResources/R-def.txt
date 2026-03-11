@@ -1,0 +1,12 @@
+R_DEF: Internal format may change without notice
+local
+id btnPermission
+id btnStart
+id btnStop
+id dragHandle
+id overlayRoot
+id overlayWebView
+id urlInput
+layout activity_main
+layout overlay_view
+style Theme.FloatingTako
